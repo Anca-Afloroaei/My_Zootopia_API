@@ -79,31 +79,26 @@ def build_html_page(output_string, template_string, output_file):
 
 
 def main():
-    animal_query = input("Enter a name of an animal: ").strip()
-    if not animal_query:
-        print("No animal name provided. Exiting.")
+    animal_name = input("Enter a name of an animal: ").strip()
+    try:
+        animals_data = fetch_data_from_api(animal_name)
+    except Exception as e:
+        print(f"Error fetching data: {e}")
         return
 
-    try:
-        animals_data = fetch_data_from_api(animal_query)
-        if not animals_data:
-            print(f"No animals found for '{animal_query}'.")
-            return
+    template = load_template("animals_template.html")
 
-        template = load_template("animals_template.html")
+    if not animals_data:
+        animals_info_str = f'''
+        <h2 style="color: red; text-align: center; padding-top: 2em;">
+            The animal "{animal_name}" does not exist.
+        </h2>
+        '''
+    else:
         animals_info_str = generate_animals_info_string(animals_data)
-        build_html_page(animals_info_str, template, "animals.html")
-        print("Website was successfully generated to the file animals.html.")
 
-    except Exception as e:
-        print(f"An error occurred: {e}")
-
-
-
-    # animals_data = fetch_data_from_api()
-    # template = load_template("animals_template.html")
-    # animals_info_str = generate_animals_info_string(animals_data)
-    # build_html_page(animals_info_str, template, "animals.html")
+    build_html_page(animals_info_str, template, "animals.html")
+    print("Website was successfully generated to the file animals.html.")
 
 
 if __name__ == "__main__":
