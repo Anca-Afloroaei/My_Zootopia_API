@@ -1,29 +1,3 @@
-# import requests
-#
-#
-# API_URL = "https://api.api-ninjas.com/v1/animals?name="
-# API_KEY = "szSWwT9TDE/6KodUxjfdog==AOjQXTPTjXgqgfVS"
-#
-#
-# def fetch_data_from_api(animal_name):
-#     """
-#     Fetches animal data from the API based on user-provided animal name.
-#     """
-#     headers = {"X-Api-Key": API_KEY}
-#     url = f"{API_URL}{animal_name}"
-#     #print(f"Fetching from: {url}")
-#
-#     response = requests.get(url, headers=headers)
-#
-#     # print(f"Status Code: {response.status_code}")  # DEBUG
-#     # print(f"Response Text: {response.text}")
-#
-#     if response.status_code == 200:
-#         return response.json()
-#     else:
-#         raise Exception(f"API request failed with status code {response.status_code}: {response.text}")
-
-
 import data_fetcher
 
 
@@ -104,3 +78,30 @@ def main():
 if __name__ == "__main__":
     main()
 
+
+
+
+# import requests
+#
+#
+# API_URL = "https://api.api-ninjas.com/v1/animals?name="
+# API_KEY = "szSWwT9TDE/6KodUxjfdog==AOjQXTPTjXgqgfVS"
+#
+#
+# def fetch_data_from_api(animal_name):
+#     """
+#     Fetches animal data from the API based on user-provided animal name.
+#     """
+#     headers = {"X-Api-Key": API_KEY}
+#     url = f"{API_URL}{animal_name}"
+#     #print(f"Fetching from: {url}")
+#
+#     response = requests.get(url, headers=headers)
+#
+#     # print(f"Status Code: {response.status_code}")  # DEBUG
+#     # print(f"Response Text: {response.text}")
+#
+#     if response.status_code == 200:
+#         return response.json()
+#     else:
+#         raise Exception(f"API request failed with status code {response.status_code}: {response.text}")
