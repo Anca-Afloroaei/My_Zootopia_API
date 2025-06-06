@@ -1,28 +1,30 @@
-import requests
+# import requests
+#
+#
+# API_URL = "https://api.api-ninjas.com/v1/animals?name="
+# API_KEY = "szSWwT9TDE/6KodUxjfdog==AOjQXTPTjXgqgfVS"
+#
+#
+# def fetch_data_from_api(animal_name):
+#     """
+#     Fetches animal data from the API based on user-provided animal name.
+#     """
+#     headers = {"X-Api-Key": API_KEY}
+#     url = f"{API_URL}{animal_name}"
+#     #print(f"Fetching from: {url}")
+#
+#     response = requests.get(url, headers=headers)
+#
+#     # print(f"Status Code: {response.status_code}")  # DEBUG
+#     # print(f"Response Text: {response.text}")
+#
+#     if response.status_code == 200:
+#         return response.json()
+#     else:
+#         raise Exception(f"API request failed with status code {response.status_code}: {response.text}")
 
 
-API_URL = "https://api.api-ninjas.com/v1/animals?name="
-API_KEY = "szSWwT9TDE/6KodUxjfdog==AOjQXTPTjXgqgfVS"
-
-
-def fetch_data_from_api(animal_name):
-    """
-    Fetches animal data from the API based on user-provided animal name.
-    """
-    headers = {"X-Api-Key": API_KEY}
-    url = f"{API_URL}{animal_name}"
-    #print(f"Fetching from: {url}")
-
-    response = requests.get(url, headers=headers)
-
-    # print(f"Status Code: {response.status_code}")  # DEBUG
-    # print(f"Response Text: {response.text}")
-
-    if response.status_code == 200:
-        return response.json()
-    else:
-        raise Exception(f"API request failed with status code {response.status_code}: {response.text}")
-
+import data_fetcher
 
 
 def load_template(file_path):
@@ -67,6 +69,8 @@ def generate_animals_info_string(data):
         output += serialize_animal(animal)
     return output
 
+    # return "".join(serialize_animal(animal) for animal in data)
+
 
 def build_html_page(output_string, template_string, output_file):
     """
@@ -80,24 +84,20 @@ def build_html_page(output_string, template_string, output_file):
 
 def main():
     animal_name = input("Enter a name of an animal: ").strip()
-    try:
-        animals_data = fetch_data_from_api(animal_name)
-    except Exception as e:
-        print(f"Error fetching data: {e}")
-        return
-
+    data = data_fetcher.fetch_data(animal_name)
     template = load_template("animals_template.html")
 
-    if not animals_data:
-        animals_info_str = f'''
+    if not data:
+        html_msg = f'''
         <h2 style="color: red; text-align: center; padding-top: 2em;">
             The animal "{animal_name}" does not exist.
         </h2>
         '''
+        build_html_page(html_msg, template, "animals.html")
     else:
-        animals_info_str = generate_animals_info_string(animals_data)
+        animals_info_str = generate_animals_info_string(data)
+        build_html_page(animals_info_str, template, "animals.html")
 
-    build_html_page(animals_info_str, template, "animals.html")
     print("Website was successfully generated to the file animals.html.")
 
 
