@@ -1,10 +1,22 @@
-import json
+import requests
 
 
-def load_data(file_path):
-    """Loads data from the JSON file."""
-    with open(file_path, "r", encoding="utf-8") as handle:
-        return json.load(handle)
+API_URL = "https://api.api-ninjas.com/v1/animals?name=fox"
+API_KEY = "szSWwT9TDE/6KodUxjfdog==AOjQXTPTjXgqgfVS"
+
+
+def fetch_data_from_api():
+    """
+    Fetches animal data from the API.
+    Returns a JSON response.
+    """
+    headers = {"X-Api-Key": API_KEY}
+    response = requests.get(API_URL, headers=headers)
+
+    if response.status_code == 200:
+        return response.json()
+    else:
+        raise Exception(f"API request failed with status code {response.status_code}: {response.text}")
 
 
 def load_template(file_path):
@@ -19,8 +31,8 @@ def serialize_animal(animal):
     """
     output = '<li class="cards__item">\n'
 
-    if "name" in animal:
-        output += f'  <div class="card__title">{animal["name"]}</div>\n'
+    #if "name" in animal:
+    output += f'  <div class="card__title">{animal["name"]}</div>\n'
 
     output += '  <p class="card__text">\n'
 
@@ -61,7 +73,7 @@ def build_html_page(output_string, template_string, output_file):
 
 
 def main():
-    animals_data = load_data("animals_data.json")
+    animals_data = fetch_data_from_api()
     template = load_template("animals_template.html")
     animals_info_str = generate_animals_info_string(animals_data)
     build_html_page(animals_info_str, template, "animals.html")
