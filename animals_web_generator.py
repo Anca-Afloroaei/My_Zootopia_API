@@ -1,22 +1,28 @@
 import requests
 
 
-API_URL = "https://api.api-ninjas.com/v1/animals?name=fox"
+API_URL = "https://api.api-ninjas.com/v1/animals?name="
 API_KEY = "szSWwT9TDE/6KodUxjfdog==AOjQXTPTjXgqgfVS"
 
 
-def fetch_data_from_api():
+def fetch_data_from_api(animal_name):
     """
-    Fetches animal data from the API.
-    Returns a JSON response.
+    Fetches animal data from the API based on user-provided animal name.
     """
     headers = {"X-Api-Key": API_KEY}
-    response = requests.get(API_URL, headers=headers)
+    url = f"{API_URL}{animal_name}"
+    #print(f"Fetching from: {url}")
+
+    response = requests.get(url, headers=headers)
+
+    # print(f"Status Code: {response.status_code}")  # DEBUG
+    # print(f"Response Text: {response.text}")
 
     if response.status_code == 200:
         return response.json()
     else:
         raise Exception(f"API request failed with status code {response.status_code}: {response.text}")
+
 
 
 def load_template(file_path):
@@ -73,10 +79,31 @@ def build_html_page(output_string, template_string, output_file):
 
 
 def main():
-    animals_data = fetch_data_from_api()
-    template = load_template("animals_template.html")
-    animals_info_str = generate_animals_info_string(animals_data)
-    build_html_page(animals_info_str, template, "animals.html")
+    animal_query = input("Enter a name of an animal: ").strip()
+    if not animal_query:
+        print("No animal name provided. Exiting.")
+        return
+
+    try:
+        animals_data = fetch_data_from_api(animal_query)
+        if not animals_data:
+            print(f"No animals found for '{animal_query}'.")
+            return
+
+        template = load_template("animals_template.html")
+        animals_info_str = generate_animals_info_string(animals_data)
+        build_html_page(animals_info_str, template, "animals.html")
+        print("Website was successfully generated to the file animals.html.")
+
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
+
+
+    # animals_data = fetch_data_from_api()
+    # template = load_template("animals_template.html")
+    # animals_info_str = generate_animals_info_string(animals_data)
+    # build_html_page(animals_info_str, template, "animals.html")
 
 
 if __name__ == "__main__":
